@@ -1,8 +1,6 @@
 import loris, os, time
 from pyo import *
 import math
-
-s = Server().boot()
     
 class PartialOsc:
     
@@ -114,7 +112,7 @@ class LorisSynth:
     """
     
     
-    def __init__(self,parts,sr,size,fade):
+    def __init__(self,parts,sr,size,fade=0.001):
         
         self.oscs=[]
         
@@ -127,35 +125,36 @@ class LorisSynth:
         for osc in self.oscs:
             osc.out()
             
-            
-parts=loris.importSpc("clarinet.spc")
-
-
-if True:
-    cnt=0
-    for part in parts:
-        #print "*****************************************"
-        #it=part.iterator()
-        #while not it.atEnd():
-        #    bp=it.next()
-        #    print "t:",bp.time(), " a:",bp.amplitude()," bw:",bp.bandwidth()," f:",bp.frequency()," p:",bp.phase()
-        cnt+=1
-    print " There are ",cnt," Partials "
+if __name__ == "__main__":            
+    parts=loris.importSpc("clarinet.spc")
     
-t=0
-for part in parts:
-   for bp in part:
-       t=max(t,bp.time()) 
-       
-       
+    
+    if True:
+        cnt=0
+        for part in parts:
+            #print "*****************************************"
+            #it=part.iterator()
+            #while not it.atEnd():
+            #    bp=it.next()
+            #    print "t:",bp.time(), " a:",bp.amplitude()," bw:",bp.bandwidth()," f:",bp.frequency()," p:",bp.phase()
+            cnt+=1
+        print " There are ",cnt," Partials "
+        
+    t=0
+    for part in parts:
+       for bp in part:
+           t=max(t,bp.time()) 
+           
+           
+    s = Server().boot()
 
-print " t max = ",t
-fade=0.001
-samplerate=44100
-size=int(samplerate*(t+2*fade))
-
-synth=LorisSynth(parts,samplerate,size,fade)
-synth.out()
-
-s.gui(locals())
+    print " t max = ",t
+    fade=0.001
+    samplerate=44100
+    size=int(samplerate*(t+2*fade))
+    
+    synth=LorisSynth(parts,samplerate,size,fade)
+    synth.out()
+    
+    s.gui(locals())
         
