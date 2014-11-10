@@ -2,15 +2,9 @@
 import wx
 import random
 import loris
-from  pyoLorisSynth import *
 
-class Thing:
-    
-    def __init__(self,name,size,sr,parts):
-        self.size=size
-        self.sr=44100
-        self.name=name
-        self.parts=parts
+import facade,os,sys
+
             
 class MyFrame(wx.Frame):
    
@@ -18,63 +12,36 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, parent, -1, title, pos, size)
         self.make_panels()
         self.Bind(wx.EVT_IDLE,self.monit)
-        self.thing=None
-                   
-        self.server = Server().boot().start()
-
-
+        self.facade=facade.Facade()
+        self.def_dir=os.getcwd()
+        
+    def synth(self,evt):   
+        
+       self.facade.send("model.synth()") 
+       
+        
+  
     def analyze(self,evt):
         
         
-        name="clarinet.aiff"
-        file=loris.AiffFile(name)
-        samps  = file.samples()
-        samplerate=file.sampleRate()
-     
-
-
-        df=float(self.drift_ctrl.GetValue())
-        reso=float(self.freq_ctrl.GetValue())
-        lobe=float(self.lobe_ctrl.GetValue())
-        floor=float(self.floor_ctrl.GetValue())
+        fd=wx.FileDialog(self, " File name",defaultDir=self.def_dir)
         
-        print "analyse",reso,df,lobe
-      
-        anal=loris.Analyzer(270)    #  reso,lobe)       # reconfigure Analyzer
-        anal.setFreqDrift(30)       #  df )
-     
-        samplerate=44100
-        parts = anal.analyze( samps, samplerate )
-            
-        
-        # loris.channelize( flut, loris.createFreqReference( flut, 291*.8, 291*1.2, 50 ), 1 )
-        
-        refenv = anal.fundamentalEnv()
-        loris.channelize( parts, refenv, 1 )
-        loris.distill( parts )
-        
-        
-        self.thing=Thing(name,len(samps),samplerate,parts)
-
-     
-     
-    def synth(self,evt):   
-        
-        if self.thing == None:
-            return
-        thing=self.thing
-        
-        # self.server.stop()
-        synth=LorisSynth(thing.parts,thing.sr,thing.size)
-        synth.out()
+        fd.ShowModal()
+        name=fd.GetFilenames()[0]   #     "clarinet.aiff"
  
-         
-        time.sleep(500)
         
-        print "SYNTH" 
+        drift=self.drift_ctrl.GetValue()
+        resolution=self.resolution_ctrl.GetValue()
+        lobe=self.lobe_ctrl.GetValue()
+        floor=self.floor_ctrl.GetValue()
     
+        self.facade.send("model.analyze(name='"+name+"',drift="+drift+",resolution="+resolution+",lobe="+lobe+",floor="+floor+")")
+            
+     
+   
     def quit(self,evt):
         
+        self.facade.quit()
         print "Quit"
         sys.exit(0)
         
@@ -155,7 +122,7 @@ class MyFrame(wx.Frame):
         sizer=wx.BoxSizer(wx.HORIZONTAL)
       
       
-        self.freq_ctrl,pan=self.add_number(panel,20.0,1000,300,"Resolution")
+        self.resolution_ctrl,pan=self.add_number(panel,20.0,1000,300,"Resolution")
         sizer.Add(pan)
    
         self.drift_ctrl,pan=self.add_number(panel,20.0,1000,30,"Drift")
@@ -167,7 +134,6 @@ class MyFrame(wx.Frame):
         self.floor_ctrl,pan=self.add_number(panel,20.0,1000,120,"Floor")
         sizer.Add(pan)
  
-
         panel.SetSizer(sizer)
         
         return panel
@@ -195,17 +161,7 @@ class MyFrame(wx.Frame):
         synth.Bind(wx.EVT_BUTTON,self.synth)
         
         
-        
-#         kill.Bind(wx.EVT_BUTTON, self.kill_pheno)
-#         
-#         creat.Bind(wx.EVT_BUTTON, self.create_pheno)   
-#         edit.Bind(wx.EVT_BUTTON, self.edit_pheno)     
-#         breed.Bind(wx.EVT_BUTTON,self.breed_pheno)
-#         save.Bind(wx.EVT_BUTTON,self.save_pheno)
-#         load.Bind(wx.EVT_BUTTON,self.load_pheno)
-#                          
-        #panel.SetAutoLayout(True)
-
+  
         panel.SetSizer(box)
         #panel.Layout()
         return panel

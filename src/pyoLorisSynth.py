@@ -126,7 +126,7 @@ class LorisSynth:
             osc.out()
             
 if __name__ == "__main__":            
-    parts=loris.importSpc("clarinet.spc")
+    parts=loris.importSpc("clarinet.aiff.spc")
     
     
     if True:
