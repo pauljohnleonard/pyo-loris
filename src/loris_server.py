@@ -59,9 +59,9 @@ class Model:
         refenv = anal.fundamentalEnv()
         loris.channelize( parts, refenv, 1 )
         loris.distill( parts )
-        loris.exportSpc(name+".spc",parts,60)
-#         parts=loris.importSpc(name+".spc")
         
+        loris.exportSpc(name+".spc",parts,60)
+        parts=loris.importSpc(name+".spc")
         
         self.thing=Thing(name,len(samps),samplerate,parts)
 
