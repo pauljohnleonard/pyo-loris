@@ -1,4 +1,4 @@
-import loris, os, time
+import loris
 from pyo import *
 import math
     
@@ -31,7 +31,7 @@ class PartialOsc:
         #     "       of the noise
         #    frequency of the oscillator
         #  We add points before and after the end of the list because the list does not contain zeros at these points
-        #  
+        #  TypeError: "input" argument must be a PyoObject.
         ampNoiseList=[(0,0)]
         ampToneList=[(0,0)]
         freqList=[(0,0)]
@@ -50,14 +50,14 @@ class PartialOsc:
                     t=int((t_sec-fade)*sr)
                 else:
                     t=1
-                          
+
                 ampToneList.append((t,0))
                 ampNoiseList.append((t,0))
                 freqList.append((t,f))
         
             t=int(t_sec *sr)
             ampTone = a*math.sqrt( 1. - bw )
-            ampNoise = a*math.sqrt( 2. * bw ) ;  
+            ampNoise = a*math.sqrt( 2. * bw )
             ampToneList.append((t,ampTone))
             ampNoiseList.append((t,ampNoise))   
             freqList.append((t,f))
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     samplerate=44100
     size=int(samplerate*(t+2*fade))
     
-    synth=LorisSynth(parts,samplerate,size,fade)
+    synth=LorisSynth(parts,samplerate,size)
     synth.out()
     
     s.gui(locals())

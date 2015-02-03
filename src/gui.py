@@ -175,7 +175,7 @@ if __name__ == "__main__":
   
       
     #random.seed(0)
-    print random.getstate()
+    # print random.getstate()
 
      
     app =  wx.App(False)     #  wx.PySimpleApp()

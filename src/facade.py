@@ -1,14 +1,9 @@
-import subprocess,inspect
+import subprocess
 import atexit,time,Queue,threading
 
 class Facade:
     """
-    
-    Usage
-    
-    c=gaclient.Clinet(debug=False,srate=44100.0)
-    c.send(" stuff ")
-    
+
     
     """
     

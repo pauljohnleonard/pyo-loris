@@ -3,7 +3,9 @@ from pyo import *
 import math
 
 s = Server().boot()
-    
+
+
+spc_file="clarinet.spc"
     
 # All the oscillators can share a noise generator ?
 # Seems to work OK I can not hear any artifacts
@@ -144,7 +146,7 @@ class LorisSynth:
             osc.out()
             
             
-parts=loris.importSpc("flute.spc")
+parts=loris.importSpc(spc_file)
 
 
 if True:
