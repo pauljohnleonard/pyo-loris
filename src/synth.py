@@ -10,7 +10,8 @@ class Synth:
     def __init__(self,feat):
         
         self.mixer=Mixer(outs=2, chnls=1).out()
-     
+
+        # these are arrays
         self.freqs=SigTo(value=feat.freq,time=1.0)       
         self.ampsNoise=SigTo(value=feat.noise,time=1.0)
         self.ampsTone=SigTo(value=feat.tone,time=1.0)
@@ -38,7 +39,9 @@ class Synth:
        
        
     def setTarget(self,feat,time=None):
-        
+        """
+        set the target for all the oscillators in terms of noise tone and freq.
+        """
         if time != None:
             self.freqs.setTime(time)
             self.ampsNoise.setTime(time)
@@ -51,8 +54,6 @@ class Synth:
         
         
 class Feature:
-    
-    
     
     def __init__(self,fund):
         self.freq=[]
@@ -122,9 +123,45 @@ class PartialOsc:
         self.osc.out()
     
         
+
+
+def process():
+
+
+
+
+
 if __name__ == "__main__":
     s = Server().boot()
-  
+
+    spc_file="samples/clarinet.spc"
+    parts=loris.importSpc(spc_file)
+
+    n = len(parts)
+
+
+    if True:
+        cnt=0
+        for part in parts:
+            print "***************************************************"
+            it=part.iterator()
+            while not it.atEnd():
+                bp=it.next()
+                print "t:",bp.time(), " a:",bp.amplitude()," bw:",bp.bandwidth()," f:",bp.frequency()," p:",bp.phase()
+                #
+                break
+            cnt+=1
+        print " There are ",cnt," Partials "
+
+
+
+
+
+
+
+
+
+
     fMax=15000
     fund=100.0
  

@@ -4,7 +4,7 @@ import loris, os, time
 #import plotter
 import sys
 
-name='clarinet'
+name='samples/clarinet'
 
   
 a = loris.Analyzer( 270 )       # reconfigure Analyzer
