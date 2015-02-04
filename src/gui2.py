@@ -18,7 +18,7 @@ class WaveDisplay(wx.Panel):
         self.SetBackgroundColour(BACKGROUND_COLOUR)
         self.sndBitmap=None
         self.backgroundcolor="#3F3F44"
-        self.outlinecolor = "#FFFFFF"
+        self.outlinecolor = "#FFFF0F"
 
     def create_bitmap(self,model):
         size = self.GetSizeTuple()
