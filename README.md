@@ -9,4 +9,5 @@ stretch / morphing etc..
  Requires:
 
    loris  http://www.cerlsoundgroup.org/Loris/
+
    pyo    http://code.google.com/p/pyo/
