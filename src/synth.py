@@ -190,7 +190,6 @@ class PartialOsc:
     def out(self):
         self.osc.out()
     
-        
 
 
 class Player:
