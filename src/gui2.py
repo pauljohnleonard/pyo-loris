@@ -12,7 +12,7 @@ class WaveDisplay(wx.Panel):
 
 
     def __init__(self,parent):
-        wx.Panel.__init__(self, parent, -1, (0,0), (400,200))
+        wx.Panel.__init__(self, parent, -1, (0,0), (400,100))
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.SetBackgroundColour(BACKGROUND_COLOUR)
