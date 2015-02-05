@@ -81,7 +81,7 @@ class MyFrame(wx.Frame):
         self.def_dir=os.getcwd()
         self.model=model.Model()
         self.model.server._server.setAmpCallable(self.vu_meter)
-        self.wave_panel=None
+
         self.Layout()
 
     def synth(self,evt):
@@ -108,14 +108,19 @@ class MyFrame(wx.Frame):
 
         self.model.analyze(name=name,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
 
+        self.wave.create_bitmap(self.model)
 
-        panel=SndViewTablePanel(self,self.model.table,self.mouse_callback)
-        if self.wave_panel:
-            self.widgets_box.Replace(self.wave_panel,panel)
-        else:
-            self.widgets_box.Add(panel,2,wx.EXPAND)
-        self.Layout()
-        self.wave_panel=panel
+
+        # panel=SndViewTablePanel(self,self.model.table,self.mouse_callback)
+        #
+        #
+        #
+        # if self.wave_panel:
+        #     self.widgets_box.Replace(self.wave_panel,panel)
+        # else:
+        #     self.widgets_box.Add(panel,2,wx.EXPAND)
+        # self.Layout()
+        # self.wave_panel=panel
 
 
 
@@ -145,7 +150,7 @@ class MyFrame(wx.Frame):
         self.console = wx.TextCtrl(self, -1, " server console ", style=wx.TE_MULTILINE)
 
 
-        # self.wave=wx.Panel(WaveDisplay(self)
+        self.wave=WaveDisplay(self)
 
         box = wx.BoxSizer(wx.VERTICAL)
 
@@ -154,7 +159,7 @@ class MyFrame(wx.Frame):
         box.Add(but, 0, flag=wx.EXPAND|wx.ALL)
         box.Add(self.cmdbox,0,flag=wx.EXPAND|wx.ALL)
         box.Add(self.console,0,flag=wx.EXPAND|wx.ALL)
-        # box.Add(self.wave,0,flag=wx.EXPAND|wx.ALL)
+        box.Add(self.wave,2,flag=wx.EXPAND|wx.ALL)
 
         
         self.cmdbox.Bind(wx.EVT_TEXT_ENTER,self.cmd_func)
