@@ -2,9 +2,8 @@ __author__ = 'eespjl'
 
 import atexit
 
-import synth
+from  pyoLorisSynth import *
 import pyo
-import loris
 
 
 class Thing:
@@ -20,9 +19,9 @@ class Model:
 
     def __init__(self):
         self.thing=None
-        self.server = pyo.Server().boot()
+
+        self.server = Server().boot()
         atexit.register(self.quit)
-        self.feat=None
 
 
     def synth(self):
@@ -33,8 +32,8 @@ class Model:
             return
         thing=self.thing
 
-        self.synth=synth.Synth(self.feat)
-       # self.synth.out()
+        self.synth=LorisSynth(thing.parts,thing.sr,thing.size)
+        self.synth.out()
         self.server.start()
 
     def analyze(self,name,resolution=270,drift=30,lobe=270,floor=80):
@@ -80,11 +79,6 @@ class Model:
         samplerate=44100
         size=int(samplerate*(t+2*fade))
         self.thing=Thing(name,size,samplerate,parts)
-        self.feat=synth.Feature(len(parts))
-
-
-    def set_pos(self,mpos):
-        pass
 
     def quit(self):
         self.server.stop()
@@ -96,7 +90,7 @@ if __name__ == "__main__":
     model=Model()
 
 
-    model.analyze(name='samples/clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
+    model.analyze(name='clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
     model.synth()
 
 

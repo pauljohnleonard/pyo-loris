@@ -1,14 +1,19 @@
 
 import wx
 import model
-from pyolib._wxwidgets import ControlSlider, VuMeter, BACKGROUND_COLOUR
+from pyolib._wxwidgets import ControlSlider, VuMeter, BACKGROUND_COLOUR,SndViewTable,SndViewTablePanel
+from pyolib._widgets import wxShowWindow
 
-import facade,os,sys
+import os,sys
 
 
 
 
 class WaveDisplay(wx.Panel):
+
+    """
+    Decided to use the pyo table view  so this is on the back burner
+    """
 
 
     def __init__(self,parent):
@@ -76,6 +81,7 @@ class MyFrame(wx.Frame):
         self.def_dir=os.getcwd()
         self.model=model.Model()
         self.model.server._server.setAmpCallable(self.vu_meter)
+        self.wave_panel=None
         self.Layout()
 
     def synth(self,evt):
@@ -91,7 +97,7 @@ class MyFrame(wx.Frame):
         #fd.ShowModal()
         #name=fd.GetFilenames()[0]
 
-        name = "clarinet.aiff"
+        name = "samples/clarinet.aiff"
  
         
         drift=float(self.drift_ctrl.GetValue())
@@ -101,9 +107,25 @@ class MyFrame(wx.Frame):
 
 
         self.model.analyze(name=name,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
-        self.wave.create_bitmap(self.model)
 
-   
+
+        panel=SndViewTablePanel(self,self.model.table,self.mouse_callback)
+        if self.wave_panel:
+            self.widgets_box.Replace(self.wave_panel,panel)
+        else:
+            self.widgets_box.Add(panel,2,wx.EXPAND)
+        self.Layout()
+        self.wave_panel=panel
+
+
+
+    def mouse_callback(self,mpos):
+
+
+        self.model.set_pos(mpos)
+
+        print self.ScreenToClient(wx.GetMousePosition())
+
     def quit(self,evt):
         
         print "Quit"
@@ -121,7 +143,9 @@ class MyFrame(wx.Frame):
         but=self.make_button_panel(self)
         self.cmdbox = wx.TextCtrl (self, -1, style=wx.TE_PROCESS_ENTER )
         self.console = wx.TextCtrl(self, -1, " server console ", style=wx.TE_MULTILINE)
-        self.wave=WaveDisplay(self)
+
+
+        # self.wave=wx.Panel(WaveDisplay(self)
 
         box = wx.BoxSizer(wx.VERTICAL)
 
@@ -130,13 +154,16 @@ class MyFrame(wx.Frame):
         box.Add(but, 0, flag=wx.EXPAND|wx.ALL)
         box.Add(self.cmdbox,0,flag=wx.EXPAND|wx.ALL)
         box.Add(self.console,0,flag=wx.EXPAND|wx.ALL)
-        box.Add(self.wave,0,flag=wx.EXPAND|wx.ALL)
+        # box.Add(self.wave,0,flag=wx.EXPAND|wx.ALL)
 
         
         self.cmdbox.Bind(wx.EVT_TEXT_ENTER,self.cmd_func)
         
         #self.SetAutoLayout(True)
         self.SetSizer(box)
+
+        self.widgets_box=box
+
 #        self.Layout()
         
     def cmd_func(self):

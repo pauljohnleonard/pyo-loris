@@ -133,9 +133,7 @@ class FeatureX:
         for i in range(Feature.factory.n):
             self.noise.append(0.0)
             self.tone.append(1.0)
-        
-        
-        
+
         
 class FactoryX:
     
@@ -225,26 +223,3 @@ if __name__ == "__main__":
 
     s.gui('locals()')
 
-
-
-if False:
-    fMax=15000
-    fund=100.0
- 
-    factory=Feature.factory=Factory(int(fMax/fund))
-    
-    feat=Feature(fund)
-    synth=Synth(feat)
-
-    s.start()
-
-    dt=.1
-
-    feat.freq=factory.random_values(500,600)
-    synth.setTarget(feat,dt)
-
-
-
-
-    s.gui(locals())
-        
