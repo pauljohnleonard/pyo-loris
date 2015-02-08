@@ -5,7 +5,7 @@ import math
 s = Server().boot()
 
 
-spc_file="clarinet.spc"
+spc_file="../samples/clarinet.aiff.spc"
     
 # All the oscillators can share a noise generator ?
 # Seems to work OK I can not hear any artifacts

@@ -4,13 +4,15 @@ import loris, os, time
 #import plotter
 import sys
 
-name='samples/clarinet'
 
+name='clarinet'
+f_name='samples/'+name+'.aiff'
+spc_name='spc/'+name+'.spc'
   
 a = loris.Analyzer( 270 )       # reconfigure Analyzer
 a.setFreqDrift( 30 )
 
-file=loris.AiffFile( name+'.aiff' )
+file=loris.AiffFile( f_name )
 v = file.samples()
 samplerate=file.sampleRate()
 
@@ -45,7 +47,7 @@ for part in parts:
         bp=it.next()
         print "t:",bp.time(), " a:",bp.amplitude()," bw:",bp.bandwidth()," f:",bp.frequency()," p:",bp.phase()
     
-loris.exportSpc(name+".spc",parts,60)
+loris.exportSpc(spc_name,parts,60)
 print "Done"
 
  

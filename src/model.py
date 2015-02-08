@@ -2,9 +2,10 @@ __author__ = 'eespjl'
 
 import atexit
 
-import synth
 import pyo
 import loris
+
+from src.Attic import synth
 
 
 class Thing:
@@ -25,6 +26,8 @@ class Model:
         self.feat=None
 
 
+
+
     def synth(self):
 
         self.server.stop()
@@ -33,7 +36,7 @@ class Model:
             return
         thing=self.thing
 
-        self.synth=synth.Synth(self.feat)
+        self.synth= synth.Synth(self.feat)
        # self.synth.out()
         self.server.start()
 
@@ -80,7 +83,7 @@ class Model:
         samplerate=44100
         size=int(samplerate*(t+2*fade))
         self.thing=Thing(name,size,samplerate,parts)
-        self.feat=synth.Feature(len(parts))
+        self.feat= synth.Feature(len(parts))
 
 
     def set_pos(self,mpos):
@@ -88,7 +91,6 @@ class Model:
 
     def quit(self):
         self.server.stop()
-
 
 
 

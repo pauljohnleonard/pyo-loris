@@ -2,7 +2,7 @@ import loris, os, time
 
 import math
             
-parts=loris.importSpc("flute.spc")
+parts=loris.importSpc("samples/flute.aiff.spc")
 
 
 

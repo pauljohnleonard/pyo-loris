@@ -78,7 +78,7 @@ class MyFrame(wx.Frame):
         self.make_panels()
         self.Bind(wx.EVT_IDLE,self.monit)
        # self.facade=facade.Facade()
-        self.def_dir=os.getcwd()
+        self.def_dir=os.getcwd()+"/samples"
         self.model=model.Model()
         self.model.server._server.setAmpCallable(self.vu_meter)
 
@@ -92,12 +92,12 @@ class MyFrame(wx.Frame):
     def analyze(self,evt):
         
         
-        #fd=wx.FileDialog(self, " File name",defaultDir=self.def_dir)
+        fd=wx.FileDialog(self, " File name",defaultDir=self.def_dir)
         
-        #fd.ShowModal()
-        #name=fd.GetFilenames()[0]
-
-        name = "samples/clarinet.aiff"
+        fd.ShowModal()
+        name=fd.GetFilenames()[0]
+        self.def_dir=fd.GetDirectory()
+      #  name = "samples/clarinet.aiff"
  
         
         drift=float(self.drift_ctrl.GetValue())
@@ -105,8 +105,9 @@ class MyFrame(wx.Frame):
         lobe=float(self.lobe_ctrl.GetValue())
         floor=float(self.floor_ctrl.GetValue())
 
-
-        self.model.analyze(name=name,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
+        fname=str(self.def_dir+"/"+name)
+        print fname
+        self.model.analyze(name=fname,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
 
         self.wave.create_bitmap(self.model)
 

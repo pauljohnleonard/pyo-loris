@@ -84,24 +84,47 @@ class PartialOsc:
         self.ampNoiseTab=LinTable(ampNoiseList,size)
         self.freqTab=LinTable(freqList,size)
         
-        
-        self.ampTone=Osc(table=self.ampToneTab,freq=1.0/dur)
-        self.ampNoise=Osc(table=self.ampNoiseTab,freq=1.0/dur)
-        self.freq=Osc(table=self.freqTab,freq=1.0/dur)
-        
+        if False:
+            self.ampTone=Osc(table=self.ampToneTab,freq=1.0/dur)
+            self.ampNoise=Osc(table=self.ampNoiseTab,freq=1.0/dur)
+            self.freq=Osc(table=self.freqTab,freq=1.0/dur)
+        else:
+            mode=3
+            start=dur*.3
+            loop_dur=0.0
+            xfade=0
+            interp=2
+            smooth=False
+            self.ampTone=Looper(table=self.ampToneTab,start=start,dur=loop_dur,pitch=1.0/dur,xfade=xfade,mode=mode,interp=interp,autosmooth=smooth)
+            self.ampNoise=Looper(table=self.ampNoiseTab,start=start,dur=loop_dur,pitch=1.0/dur,xfade=xfade,mode=mode,interp=interp,autosmooth=smooth)
+            self.freq=Looper(table=self.freqTab,start=start,dur=loop_dur,pitch=1.0/dur,xfade=xfade,mode=mode,interp=interp,autosmooth=smooth)
+
+
+
         self.white = Noise() 
         
         # low pass filter the noise 
         # loris uses 4 forward and back coeffecients but pyo only has a bi quad.
         # TODO implement general digital filter in pyo
-        self.mod=Biquad(self.white, freq=500, q=1, type=0, mul=self.ampNoise, add=self.ampTone)
+        self.mod=Biquad(self.white, freq=500, q=1, type=interp, mul=self.ampNoise, add=self.ampTone)
                                 
         
         self.osc=Sine(freq=self.freq,mul=self.mod,phase=init_phase)
         
-        
-    def out(self):
-        self.osc.out()
+        # MIx the oscillator outputs
+          # Mix all the partials   (TODO do I really need this ?
+        self.mixer=Mixer(outs=2, chnls=1)
+        scale=1.0   # /len(feat.freq)
+        osc=self.osc
+
+        for key in range(len(osc)):
+
+            self.mixer.addInput(key,osc[key])
+            self.mixer.setAmp(key,0,scale)
+            self.mixer.setAmp(key,1,scale)
+
+        self.mixer.out()
+
 
 
 
@@ -126,7 +149,7 @@ class LorisSynth:
             osc.out()
             
 if __name__ == "__main__":            
-    parts=loris.importSpc("clarinet.aiff.spc")
+    parts=loris.importSpc("../samples/clarinet.aiff.spc")
     
     
     if True:
@@ -154,7 +177,7 @@ if __name__ == "__main__":
     size=int(samplerate*(t+2*fade))
     
     synth=LorisSynth(parts,samplerate,size)
-    synth.out()
+    # synth.out()
     
     s.gui(locals())
         

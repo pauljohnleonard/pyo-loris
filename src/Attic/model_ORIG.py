@@ -2,8 +2,9 @@ __author__ = 'eespjl'
 
 import atexit
 
-from  pyoLorisSynth import *
 import pyo
+
+from  src.Attic.pyoLorisSynth import *
 
 
 class Thing:
@@ -90,7 +91,7 @@ if __name__ == "__main__":
     model=Model()
 
 
-    model.analyze(name='clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
+    model.analyze(name='../samples/clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
     model.synth()
 
 
