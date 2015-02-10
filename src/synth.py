@@ -75,7 +75,6 @@ class Channel:
 
             for bp in part:
                 t_sec = bp.time()
-
                 f = bp.frequency()
                 a = bp.amplitude()
                 bw = bp.bandwidth()
@@ -145,7 +144,7 @@ class Channel:
 
 if __name__ == "__main__":
     s = Server().boot()
-
+    p=loris.Partial()
     spc_clar = "spc/clarinet.spc"
     parts_clar = loris.importSpc(spc_clar)
     chan_clar = Channel(parts_clar)
@@ -163,6 +162,7 @@ if __name__ == "__main__":
         freqs = [None for _ in range(N_SYNTH)]
         tones = [None for _ in range(N_SYNTH)]
         noises = [None for _ in range(N_SYNTH)]
+
 
         fact_c=Sig(1.0)
         fact_f=1.0-fact_c
