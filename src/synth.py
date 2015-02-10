@@ -57,14 +57,18 @@ class PartialOsc:
 
 
 class Channel:
-    def __init__(self, parts):
+    def __init__(self, parts,name,index):
 
 
         self.noises = []
         self.tones = []
         self.freqs = []
 
-        for part in parts:
+        print name,"======================================================================="
+
+
+        for i,part in enumerate(parts):
+            print i,part.label()
             ampNoiseList = [(0, 0)]
             ampToneList = [(0, 0)]
             freqList = [(0, 0)]
@@ -120,11 +124,12 @@ class Channel:
             ampNoiseTab = LinTable(ampNoiseList, size)
             freqTab = LinTable(freqList, size)
 
-            if True:
+            c = 2
+            if c == 0:
                 ampTone = Osc(table=ampToneTab, freq=1.0 / dur)
                 ampNoise = Osc(table=ampNoiseTab, freq=1.0 / dur)
                 freq = Osc(table=freqTab, freq=1.0 / dur)
-            else:
+            elif c == 1:
                 mode = 3
                 start = dur * .3
                 loop_dur = 0.0
@@ -137,25 +142,39 @@ class Channel:
                                   mode=mode, interp=interp, autosmooth=smooth)
                 freq = Looper(table=freqTab, start=start, dur=loop_dur, pitch=1.0 / dur, xfade=xfade, mode=mode,
                               interp=interp, autosmooth=smooth)
+            else:
+                smooth=False
+                ampTone = Pointer2(table=ampToneTab,index=index, interp=2, autosmooth=smooth)
+                ampNoise = Pointer2(table=ampNoiseTab,index=index,interp=2, autosmooth=smooth)
+                freq = Pointer2(table=freqTab,index=index,interp=2, autosmooth=smooth)
+
+
+
             self.freqs.append(freq)
             self.tones.append(ampTone)
             self.noises.append(ampNoise)
 
 
 if __name__ == "__main__":
-    s = Server().boot()
-    p=loris.Partial()
-    spc_clar = "spc/clarinet.spc"
-    parts_clar = loris.importSpc(spc_clar)
-    chan_clar = Channel(parts_clar)
 
-    spc_flute = "spc/flute.spc"
+
+    s = Server().boot()
+    index=Sig(0.0)
+    index.ctrl()
+
+    p=loris.Partial()
+    spc_clar = "samples/clarinetM.spc"
+    parts_clar = loris.importSpc(spc_clar)
+    chan_clar = Channel(parts_clar,"clarinet", index)
+
+    spc_flute = "samples//fluteM.spc"
     parts_flute = loris.importSpc(spc_flute)
-    chan_flute = Channel(parts_flute)
+    chan_flute = Channel(parts_flute,"Flute", index)
 
     N_CHAN_C = len(parts_clar)  # ,len(parts_flute))
     N_CHAN_F = len(parts_flute)  # ,len(parts_flute))
     N_SYNTH = max(N_CHAN_C, N_CHAN_F)
+
 
 
     if True:
@@ -168,20 +187,24 @@ if __name__ == "__main__":
         fact_f=1.0-fact_c
         fact_c.ctrl()
 
+
+
         for i in range(N_SYNTH):
             if i < N_CHAN_C:
-                freqs[i] = chan_clar.freqs[i]*fact_c
-                tones[i] = chan_clar.tones[i]*fact_c
-                noises[i] = chan_clar.noises[i]*fact_c
 
                 if i < N_CHAN_F:
-                    freqs[i] += chan_flute.freqs[i]*fact_f
-                    tones[i] += chan_flute.tones[i]*fact_f
-                    noises[i] += chan_flute.noises[i]*fact_f
+                    freqs[i] = chan_flute.freqs[i]*fact_f+chan_clar.freqs[i]*fact_c
+                    tones[i] = chan_flute.tones[i]*fact_f+chan_clar.tones[i]*fact_c
+                    noises[i] = chan_flute.noises[i]*fact_f+chan_clar.noises[i]*fact_c
+                else:
+                    freqs[i] = chan_clar.freqs[i]
+                    tones[i] = chan_clar.tones[i]*fact_c
+                    noises[i] = chan_clar.noises[i]*fact_c
+
 
             else:
                 if i < N_CHAN_F:
-                    freqs[i] = chan_flute.freqs[i]*fact_f
+                    freqs[i] = chan_flute.freqs[i]
                     tones[i] = chan_flute.tones[i]*fact_f
                     noises[i] = chan_flute.noises[i]*fact_f
 
@@ -190,6 +213,7 @@ if __name__ == "__main__":
         freqs = chan_flute.freqs
         tones = chan_flute.tones
         noises = chan_flute.noises
+
 
     synth = Synth(freqs, tones, noises)
 
