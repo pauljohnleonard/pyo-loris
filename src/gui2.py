@@ -24,8 +24,26 @@ class WaveDisplay(wx.Panel):
         self.sndBitmap=None
         self.backgroundcolor="#3F3F44"
         self.outlinecolor = "#FFFFBF"
+        self.Bind(wx.EVT_MOUSE_EVENTS,self.onMouse)
+        self.Bind(wx.EVT_SIZE,self.resize)
+        self.channel=None
 
-    def create_bitmap(self,model):
+    def resize(self,evt):
+        print "resize"
+        self.create_bitmap()
+
+    def onMouse(self,evt):
+      #  print evt.GetPosition(),evt.LeftIsDown()
+        pass
+
+    def set_channel(self,channel):
+        self.channel=channel
+        self.create_bitmap()
+
+    def create_bitmap(self):
+        if not self.channel:
+            return
+
         size = self.GetSizeTuple()
         self.sndBitmap = wx.EmptyBitmap(size[0], size[1])
         self.memory = wx.MemoryDC()
@@ -35,11 +53,13 @@ class WaveDisplay(wx.Panel):
         gc.SetBrush(wx.Brush("#FF0000", style=wx.TRANSPARENT))
         self.memory.SetBrush(wx.Brush(self.backgroundcolor))
         self.memory.DrawRectangle(0,0,size[0],size[1])
-        list=model.table.getViewTable(self.GetSizeTuple())
+
+        list=self.chan.table.getViewTable(self.GetSizeTuple())
 
         for samples in list:
-            if len(samples):
-                gc.DrawLines(samples)
+                if len(samples):
+                    gc.DrawLines(samples)
+
         self.memory.SelectObject(wx.NullBitmap)
         self.needBitmap = True
         self.Refresh()
@@ -109,7 +129,7 @@ class MyFrame(wx.Frame):
         print fname
         self.model.analyze(name=fname,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
 
-        self.wave.create_bitmap(self.model)
+        self.wave.set_channel(self.model.chan)
 
 
         # panel=SndViewTablePanel(self,self.model.table,self.mouse_callback)

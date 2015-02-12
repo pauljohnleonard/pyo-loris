@@ -5,7 +5,7 @@ import atexit
 import pyo
 import loris
 
-from src.Attic import synth
+import synth
 
 
 class Thing:
@@ -23,27 +23,29 @@ class Model:
         self.thing=None
         self.server = pyo.Server().boot()
         atexit.register(self.quit)
-        self.feat=None
-
+        self.chan=None
+        self.a=pyo.Sig(0.0)
+        self.index=pyo.SigTo(self.a,time=2.0)
+        self.a.ctrl()
 
 
 
     def synth(self):
 
+        if not self.chan:
+            return
+
         self.server.stop()
 
-        if self.thing == None:
-            return
-        thing=self.thing
 
-        self.synth= synth.Synth(self.feat)
-       # self.synth.out()
+        self.synth = synth.Synth(self.chan.freqs, self.chan.tones, self.chan.noises)
+
         self.server.start()
 
     def analyze(self,name,resolution=270,drift=30,lobe=270,floor=80):
 
 
-#         name="clarinet.aiff"
+        #         name="clarinet.aiff"
 
 
         if True:
@@ -52,8 +54,8 @@ class Model:
             samps  = file.samples()
             samplerate=file.sampleRate()
 
-            self.table=pyo.SndTable(name)
-            self.table.normalize()
+            table=pyo.SndTable(name)
+            table.normalize()
 
             print "analyse",resolution,drift,lobe
 
@@ -74,16 +76,10 @@ class Model:
         else:
             parts=loris.importSpc(name+".spc")
 
-        t=0
-        for part in parts:
-            for bp in part:
-                t=max(t,bp.time())
 
-        fade=0.001
-        samplerate=44100
-        size=int(samplerate*(t+2*fade))
-        self.thing=Thing(name,size,samplerate,parts)
-        self.feat= synth.Feature(len(parts))
+
+        self.chan=synth.Channel(self.index,parts)
+        self.chan.table=table
 
 
     def set_pos(self,mpos):

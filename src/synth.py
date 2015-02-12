@@ -43,20 +43,14 @@ class Synth:
 
 
 class Channel:
-    def __init__(self, index,spc_file):
+    def __init__(self, index,parts):
 
 
-        if not  os.path.isfile(spc_file):
-            print spc_file, " Does not exist"
-            sys.exit(0)
-
-
-        self.parts= loris.importSpc(spc_file)
+        self.parts=parts
         self.noises = []
         self.tones = []
         self.freqs = []
 
-        print spc_file,"======================================================================="
 
 
         for i,part in enumerate(self.parts):
@@ -193,11 +187,25 @@ if __name__ == "__main__":
     a.ctrl()
 
 
-    spc_clar="samples/clarinetM.spc"
-    chan_clar = Channel( index,spc_clar)
+    spc_file="samples/clarinetM.spc"
+    if not  os.path.isfile(spc_file):
+            print spc_file, " Does not exist"
+            sys.exit(0)
 
-    spc_flute = "samples/fluteM.spc"
-    chan_flute = Channel( index,spc_flute)
+
+    parts= loris.importSpc(spc_file)
+
+    chan_clar = Channel( index,parts)
+
+    spc_file = "samples/fluteM.spc"
+    if not  os.path.isfile(spc_file):
+            print spc_file, " Does not exist"
+            sys.exit(0)
+
+
+    parts= loris.importSpc(spc_file)
+
+    chan_flute = Channel( index,parts)
 
 
     fact=Sig(0.0)
