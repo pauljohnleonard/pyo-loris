@@ -27,6 +27,7 @@ class WaveDisplay(wx.Panel):
         self.Bind(wx.EVT_MOUSE_EVENTS,self.onMouse)
         self.Bind(wx.EVT_SIZE,self.resize)
         self.channel=None
+        self.pos_client=None
 
     def resize(self,evt):
         print "resize"
@@ -38,12 +39,14 @@ class WaveDisplay(wx.Panel):
             size = self.GetSizeTuple()
             xx=float(x)/size[0]
             yy=float(y)/size[1]
+            if self.pos_client:
+                self.pos_client.set_pos(xx)
 
 
-
-    def set_channel(self,channel):
+    def set_channel(self,channel,pos_client):
         self.channel=channel
         self.create_bitmap()
+        self.pos_client=pos_client
 
     def create_bitmap(self):
         if not self.channel:
@@ -134,7 +137,7 @@ class MyFrame(wx.Frame):
         fname = "samples/clarinet.aiff"
         self.model.add_channel(name=fname,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
 
-        self.wave.set_channel(self.model.channels[0])
+        self.wave.set_channel(self.model.channels[0],self.model)
 
 
 

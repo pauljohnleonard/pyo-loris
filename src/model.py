@@ -8,13 +8,6 @@ import loris
 import synth
 
 
-class Thing:
-
-    def __init__(self,name,size,sr,parts):
-        self.size=size
-        self.sr=sr
-        self.name=name
-        self.parts=parts
 
 
 class Model:
@@ -24,7 +17,7 @@ class Model:
         atexit.register(self.quit)
         self.channels=[None]
         self.a=pyo.Sig(0.0)
-        self.index=pyo.SigTo(self.a,time=2.0)
+        self.index=pyo.SigTo(self.a,time=.1)
 
         # only works if server.gui() is called
         self.a.ctrl()
@@ -90,7 +83,7 @@ class Model:
         :return:
         """
 
-        print x
+        print "set pos" , x
         self.a.setValue(x)
 
 
