@@ -20,29 +20,23 @@ class Thing:
 class Model:
 
     def __init__(self):
-        self.thing=None
         self.server = pyo.Server().boot()
         atexit.register(self.quit)
-        self.chan=None
+        self.channels=[None]
         self.a=pyo.Sig(0.0)
         self.index=pyo.SigTo(self.a,time=2.0)
+
+        # only works if server.gui() is called
         self.a.ctrl()
 
 
-
-    def synth(self):
+    def synth_channel(self):
 
         if not self.chan:
             return
 
-        self.server.stop()
 
-
-        self.synth = synth.Synth(self.chan.freqs, self.chan.tones, self.chan.noises)
-
-        self.server.start()
-
-    def analyze(self,name,resolution=270,drift=30,lobe=270,floor=80):
+    def add_channel(self,name,resolution=270,drift=30,lobe=270,floor=80):
 
 
         #         name="clarinet.aiff"
@@ -78,12 +72,27 @@ class Model:
 
 
 
-        self.chan=synth.Channel(self.index,parts)
-        self.chan.table=table
+        chan=synth.Channel(self.index,parts)
+        chan.table=table
+        self.channels[0]=chan
+        self.server.stop()
+
+        self.synth = synth.Synth(chan.freqs, chan.tones, chan.noises)
+
+        self.server.start()
 
 
-    def set_pos(self,mpos):
-        pass
+
+    def set_pos(self,x):
+        """
+        x  is 0 - 1
+        :param x:
+        :return:
+        """
+
+        print x
+        self.a.setValue(x)
+
 
     def quit(self):
         self.server.stop()
@@ -94,7 +103,7 @@ if __name__ == "__main__":
     model=Model()
 
 
-    model.analyze(name='samples/clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
+    model.add_channel(name='samples/clarinet.aiff',drift=30,resolution=270)    # ,lobe=120,floor=80)
     model.synth()
 
 

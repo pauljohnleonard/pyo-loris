@@ -39,7 +39,7 @@ class WaveDisplay(wx.Panel):
             xx=float(x)/size[0]
             yy=float(y)/size[1]
 
-            print xx,yy
+
 
     def set_channel(self,channel):
         self.channel=channel
@@ -117,44 +117,26 @@ class MyFrame(wx.Frame):
     def analyze(self,evt):
         
         
-        fd=wx.FileDialog(self, " File name",defaultDir=self.def_dir)
-        
-        fd.ShowModal()
-        name=fd.GetFilenames()[0]
-        self.def_dir=fd.GetDirectory()
-      #  name = "samples/clarinet.aiff"
- 
+        # fd=wx.FileDialog(self, " File name",defaultDir=self.def_dir)
+        #
+        # fd.ShowModal()
+        # name=fd.GetFilenames()[0]
+        # self.def_dir=fd.GetDirectory()
+
         
         drift=float(self.drift_ctrl.GetValue())
         resolution=float(self.resolution_ctrl.GetValue())
         lobe=float(self.lobe_ctrl.GetValue())
         floor=float(self.floor_ctrl.GetValue())
 
-        fname=str(self.def_dir+"/"+name)
-        print fname
-        self.model.analyze(name=fname,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
+        # fname=str(self.def_dir+"/"+name)
+        # print fname
+        fname = "samples/clarinet.aiff"
+        self.model.add_channel(name=fname,drift=drift,resolution=resolution,lobe=lobe,floor=floor)
 
-        self.wave.set_channel(self.model.chan)
-
-
-        # panel=SndViewTablePanel(self,self.model.table,self.mouse_callback)
-        #
-        #
-        #
-        # if self.wave_panel:
-        #     self.widgets_box.Replace(self.wave_panel,panel)
-        # else:
-        #     self.widgets_box.Add(panel,2,wx.EXPAND)
-        # self.Layout()
-        # self.wave_panel=panel
+        self.wave.set_channel(self.model.channels[0])
 
 
-
-    # def mouse_callback(self,mpos):
-    #
-    #
-    #     self.model.set_pos(mpos)
-    #     print self.ScreenToClient(wx.GetMousePosition())
 
     def quit(self,evt):
         
