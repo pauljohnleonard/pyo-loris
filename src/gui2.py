@@ -33,8 +33,13 @@ class WaveDisplay(wx.Panel):
         self.create_bitmap()
 
     def onMouse(self,evt):
-      #  print evt.GetPosition(),evt.LeftIsDown()
-        pass
+        if evt.LeftIsDown():
+            x,y=evt.GetPosition()
+            size = self.GetSizeTuple()
+            xx=float(x)/size[0]
+            yy=float(y)/size[1]
+
+            print xx,yy
 
     def set_channel(self,channel):
         self.channel=channel
@@ -54,7 +59,7 @@ class WaveDisplay(wx.Panel):
         self.memory.SetBrush(wx.Brush(self.backgroundcolor))
         self.memory.DrawRectangle(0,0,size[0],size[1])
 
-        list=self.chan.table.getViewTable(self.GetSizeTuple())
+        list=self.channel.table.getViewTable(self.GetSizeTuple())
 
         for samples in list:
                 if len(samples):
@@ -145,12 +150,11 @@ class MyFrame(wx.Frame):
 
 
 
-    def mouse_callback(self,mpos):
-
-
-        self.model.set_pos(mpos)
-
-        print self.ScreenToClient(wx.GetMousePosition())
+    # def mouse_callback(self,mpos):
+    #
+    #
+    #     self.model.set_pos(mpos)
+    #     print self.ScreenToClient(wx.GetMousePosition())
 
     def quit(self,evt):
         
