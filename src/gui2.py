@@ -69,23 +69,20 @@ class WaveDisplay(wx.Panel):
                     gc.DrawLines(samples)
 
         self.memory.SelectObject(wx.NullBitmap)
-        self.needBitmap = True
+        #self.needBitmap = True
         self.Refresh()
 
 
     def OnPaint(self, evt):
         dc = wx.PaintDC(self)
-        gc = wx.GraphicsContext_Create(dc)
         dc.BeginDrawing()
-        self.draw(dc)
+        self.draw_bitmap(dc)
         dc.EndDrawing()
 
 
-    def draw(self, dc):
-        gc = wx.GraphicsContext_Create(dc)
-        dc.BeginDrawing()
-        # dc.SetTextForeground("#000000")
-        # dc.SetFont(self.font)
+    def draw_bitmap(self, dc):
+
+
         if not self.sndBitmap:
             w,h = self.GetSizeTuple()
             dc.SetBrush(wx.Brush(self.backgroundcolor, wx.SOLID))
@@ -96,7 +93,7 @@ class WaveDisplay(wx.Panel):
             dc.DrawBitmap(self.sndBitmap,0,0)
 
 
-        dc.EndDrawing()
+
 
             
 class MyFrame(wx.Frame):
@@ -105,7 +102,7 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, parent, -1, title, pos, size)
         self.make_panels()
         self.Bind(wx.EVT_IDLE,self.monit)
-       # self.facade=facade.Facade()
+
         self.def_dir=os.getcwd()+"/samples"
         self.model=model.Model()
         self.model.server._server.setAmpCallable(self.vu_meter)
